@@ -1,0 +1,82 @@
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+public class main {
+	private static int pennies = 1;
+	private static int nickel = 5;
+	private static int dime = 10;
+	private static int quarter = 25;
+		
+	/*
+	
+	In the main function we will:
+	1.get input.
+	2.invoke MakeChange to get the resultant set.
+	3.invoke PrintHashSet to print the result.
+	
+	*/
+
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		int amount = sc.nextInt();
+
+		HashSet<int[]> changes = MakeChange(amount);
+
+		PrintResults(changes);
+
+		sc.close();
+	}
+	
+	private static void PrintResults(HashSet<int[]> changesSet) {
+
+		ArrayList<int[]> changesArr = (ArrayList<int[]>) changesSet.stream().collect(Collectors.toList());
+
+		String result = "";
+
+		result += "[";
+		for (int i = 0; i < changesArr.size(); i++) {
+
+			int[] change = changesArr.get(i);
+			result += String.format("[%d,%d,%d,%d]", change[0], change[1], change[2], change[3]);
+			if (i < changesArr.size() - 1) {
+				result += ", ";
+			}
+		}
+		result += "]";
+		System.out.println(result);
+
+	}
+
+	
+	/*
+	1.We iterate using first the nickels then the dimes and etc...
+	2.When we find a coin combination that is lesser than the desired coin amount we add to a vector
+	*/
+	
+	private static HashSet<int[]> MakeChange(int amount) {
+
+		HashSet<int[]> result = new HashSet<int[]>();
+
+		for (int quarters = 0; quarters * quarter <= amount; ++quarters) {
+
+			for (int dimes = 0; dimes * dime <= amount; ++dimes) {
+
+				for (int nickels = 0; nickels * nickel <= amount; ++nickels) {
+
+					int total = quarters * quarter + dimes * dime + nickels * nickel;
+
+					if (total <= amount) {
+						int[] currentSolution = new int[] { quarters, dimes, nickels, amount - total };
+						result.add(currentSolution);
+					}
+				}
+			}
+		}
+		return result;
+	}
+}
